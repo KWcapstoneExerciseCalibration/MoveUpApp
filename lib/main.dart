@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-void main() => runApp(MoveUp());
+void main() => runApp(const MoveUp());
 
-class MoveUp extends StatelessWidget{
+class MoveUp extends StatefulWidget{
+  const MoveUp({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _MoveUp();
+}
+
+class _MoveUp extends State<MoveUp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -11,7 +18,7 @@ class MoveUp extends StatelessWidget{
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MainPage(),
+      home: const MainPage(),
     );
   }
 
@@ -19,23 +26,25 @@ class MoveUp extends StatelessWidget{
 
 // 메인 화면
 class MainPage extends StatefulWidget{
+  const MainPage({super.key});
+
   @override
-  State<MainPage> createState() => _MainPage();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _MainPage extends State<MainPage> {
+class _MainPageState extends State<MainPage> {
+  int _level = 1;
+  int _currentExp = 80;
+  int _nextLevelExp = 100;
+
   @override
   Widget build(BuildContext context) {
     Widget levelSection = Container(
       padding: const EdgeInsets.only(top: 32, left: 32, right: 32, bottom: 5),
       child: Row(
         children: [
-          Text('Level 1 ',
-            style: TextStyle(fontSize: 20),
-          ),
-          Icon(
-            Icons.add_box_outlined,
-          )
+          Text('Level $_level ', style: const TextStyle(fontSize: 20)),
+          const Icon(Icons.add_box_outlined,)
         ],
       )
     );
@@ -47,8 +56,8 @@ class _MainPage extends State<MainPage> {
         animation: true,
         animationDuration: 2500,
         lineHeight: 15,
-        percent: 0.8,
-        center: Text("80 / 100"),
+        percent: (_currentExp.toDouble() / _nextLevelExp.toDouble()),
+        center: Text("$_currentExp / $_nextLevelExp"),
         progressColor: Colors.green,
       ),
     );
@@ -70,7 +79,7 @@ class _MainPage extends State<MainPage> {
 
           },
           child:
-          Padding(
+          const Padding(
             padding: EdgeInsets.all(10),
             child:
             Text('운동 시작', style: TextStyle(fontSize: 30)),
@@ -78,7 +87,7 @@ class _MainPage extends State<MainPage> {
         ),
     );
 
-    Column _buildButtonColumn(Color color, IconData icon, String label){
+    Column buildButtonColumn(Color color, IconData icon, String label){
       return Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -114,7 +123,7 @@ class _MainPage extends State<MainPage> {
               child:
               Padding(
                   padding: EdgeInsets.all(20),
-                  child: _buildButtonColumn(color, Icons.square, '일지')),
+                  child: buildButtonColumn(color, Icons.square, '일지')),
           ),
           TextButton(
               onPressed: () {
@@ -124,7 +133,7 @@ class _MainPage extends State<MainPage> {
               child:
               Padding(
                   padding: EdgeInsets.all(20),
-                  child: _buildButtonColumn(color, Icons.square, '통계')),
+                  child: buildButtonColumn(color, Icons.square, '통계')),
           ),
         ]
       ),
