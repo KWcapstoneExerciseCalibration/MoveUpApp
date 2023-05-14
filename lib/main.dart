@@ -118,7 +118,7 @@ class _MainPageState extends State<MainPage> {
           TextButton(
               onPressed: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => DailyLogPage()));
+                    .push(MaterialPageRoute(builder: (context) => const DailyLogPage()));
               } ,
               child:
               Padding(
@@ -165,7 +165,13 @@ class DailyLogPage extends StatefulWidget{
 }
 
 class _DailyLogPageState extends State<DailyLogPage>{
-  final int _mondayDate = 1;
+  // TODO : 일지 페이지 호출 시 및 setState 사용하여 날짜 변경 시, 이전 주의 일요일 날짜 해당 변수에 저장
+  // 지난 주 일요일의 날짜를 여기 저장합니다. 예 : 월요일은 일요일 날짜 + 1
+  int _mondayDate = 0;
+
+  // TODO : 우선 데이터베이스를 연동, 해당 날짜의 운동 데이터 읽어와 운동명 및 횟수 Set으로 저장
+  String _workoutExample = "예시 운동";
+  int _workoutExampleCount = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -174,64 +180,60 @@ class _DailyLogPageState extends State<DailyLogPage>{
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
-          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
-          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
-          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
-          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
-          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
-          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
+          _buildDateText(),
+          _buildDateText(),
+          _buildDateText(),
+          _buildDateText(),
+          _buildDateText(),
+          _buildDateText(),
+          _buildDateText(),
         ],
       ),
     );
 
     Widget workoutResultSection = Container(
-      padding: const EdgeInsets.only(top:10, left: 32, right: 32, bottom: 160),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      height: 240,
+      padding: const EdgeInsets.only(top:10, left: 32, right: 32, bottom: 10),
+      child: Column(
         children: [
-          Text(
-            '오늘 한 운동',
-            style: TextStyle(fontSize: 25),
-          ),
+          const Text('오늘 한 운동', style: TextStyle(fontSize: 25)),
+          const Padding(padding: EdgeInsets.all(5)),
+          Text('$_workoutExample   $_workoutExampleCount회', style: const TextStyle(fontSize: 20))
         ],
       ),
     );
 
-    Color color = Colors.black;
+    Color defaultColor = Colors.black;
+    Color selectedColor = Theme.of(context).primaryColor;
 
+    // TODO : 하나만 선택 가능으로 변경하기 (setState 사용 필요, 선택 인덱스 추가), 선택 개체 데이터베이스에 저장
     Widget workoutIntensitySection = Container(
       padding: const EdgeInsets.only(top:10, left: 32, right: 32, bottom: 20),
       child: Column(
         children: [
-          Text(
-            '오늘 운동 강도',
-            style: TextStyle(fontSize: 25),
-          ),
-          Padding(padding: EdgeInsets.only(top:20)),
+          const Text('오늘 운동 강도', style: TextStyle(fontSize: 25)),
+          const Padding(padding: EdgeInsets.only(top:20)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _buildButtonColumn(color, Icons.square, '매우 쉬움'),
-              _buildButtonColumn(color, Icons.square, '쉬움'),
-              _buildButtonColumn(color, Icons.square, '무난함'),
-              _buildButtonColumn(color, Icons.square, '힘듦'),
-              _buildButtonColumn(color, Icons.square, '매우 힘듦'),
+              _buildButtonColumn(selectedColor, Icons.square, '매우 쉬움'),
+              _buildButtonColumn(defaultColor, Icons.square, '쉬움'),
+              _buildButtonColumn(defaultColor, Icons.square, '무난함'),
+              _buildButtonColumn(defaultColor, Icons.square, '힘듦'),
+              _buildButtonColumn(defaultColor, Icons.square, '매우 힘듦'),
             ],
           )
         ],
       ),
     );
 
+    // TODO : 선택 개체 하이라이트 및 데이터베이스에 저장, 커스텀 증상 추가 기능 (데이터베이스 사용?)
     Widget workoutSymptomsSection = Container(
       padding: const EdgeInsets.only(top:15, left: 32, right: 32, bottom: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(
-            '운동 후 증상',
-            style: TextStyle(fontSize: 25),
-          ),
+          const Text('운동 후 증상', style: TextStyle(fontSize: 25),),
           Row(
             children: [
               OutlinedButton(
@@ -246,9 +248,7 @@ class _DailyLogPageState extends State<DailyLogPage>{
                 },
                 child: Text('피로감', style: TextStyle(fontSize: 20, color: Colors.black)),
               ),
-              Icon(
-                Icons.add_box_outlined,
-              )
+              const Icon(Icons.add_box_outlined)
             ],
           )
         ],
@@ -264,7 +264,7 @@ class _DailyLogPageState extends State<DailyLogPage>{
         body: Column(
           children: [
             dateSelectSection,
-            Divider(thickness: 2,),
+            const Divider(thickness: 2,),
             workoutResultSection,
             workoutIntensitySection,
             workoutSymptomsSection,
@@ -272,6 +272,11 @@ class _DailyLogPageState extends State<DailyLogPage>{
         ),
       ),
     );
+  }
+
+  Text _buildDateText(){
+    _mondayDate++;
+    return Text(' $_mondayDate ', style: const TextStyle(fontSize: 20));
   }
 
   Column _buildButtonColumn(Color color, IconData icon, String label){
@@ -282,45 +287,22 @@ class _DailyLogPageState extends State<DailyLogPage>{
         Icon(icon, color: color),
         Container(
           margin: const EdgeInsets.only(top: 8),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-              color: color,
-            ),
-          ),
+          child: Text(label, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400,)),
         ),
       ],
     );
   }
 }
 
-// 주간 통계
-class weeklyStatistics extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-}
 
-// 월간 통계
-class monthlyStatistics extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-}
-
+// TODO : 통계 페이지 state 전면 수정
 // 통계
 class StatisticsPage extends StatefulWidget{
   @override
-  State<StatisticsPage> createState() => _StatisticsPage();
+  State<StatisticsPage> createState() => _StatisticsPageState();
 }
 
-class _StatisticsPage extends State<StatisticsPage>{
+class _StatisticsPageState extends State<StatisticsPage>{
   int selected = 0;
 
   final sections = [weeklyStatistics(), monthlyStatistics()];
@@ -357,4 +339,22 @@ class _StatisticsPage extends State<StatisticsPage>{
     );
   }
   
+}
+
+// 주간 통계
+class weeklyStatistics extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
+}
+
+// 월간 통계
+class monthlyStatistics extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
 }
