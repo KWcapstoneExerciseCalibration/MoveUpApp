@@ -33,9 +33,9 @@ class MainPage extends StatefulWidget{
 }
 
 class _MainPageState extends State<MainPage> {
-  int _level = 1;
-  int _currentExp = 80;
-  int _nextLevelExp = 100;
+  final int _level = 1;
+  final int _currentExp = 80;
+  final int _nextLevelExp = 100;
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +122,7 @@ class _MainPageState extends State<MainPage> {
               } ,
               child:
               Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: buildButtonColumn(color, Icons.square, '일지')),
           ),
           TextButton(
@@ -132,7 +132,7 @@ class _MainPageState extends State<MainPage> {
               } ,
               child:
               Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: buildButtonColumn(color, Icons.square, '통계')),
           ),
         ]
@@ -158,11 +158,15 @@ class _MainPageState extends State<MainPage> {
 
 // 일지
 class DailyLogPage extends StatefulWidget{
+  const DailyLogPage({super.key});
+
   @override
-  State<DailyLogPage> createState() => _DailyLogPage();
+  State<DailyLogPage> createState() => _DailyLogPageState();
 }
 
-class _DailyLogPage extends State<DailyLogPage>{
+class _DailyLogPageState extends State<DailyLogPage>{
+  final int _mondayDate = 1;
+
   @override
   Widget build(BuildContext context) {
     Widget dateSelectSection = Container(
@@ -170,34 +174,13 @@ class _DailyLogPage extends State<DailyLogPage>{
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(
-            ' 1 ',
-            style: TextStyle(fontSize: 20),
-          ),
-          Text(
-            ' 2 ',
-            style: TextStyle(fontSize: 20),
-          ),
-          Text(
-            ' 3 ',
-            style: TextStyle(fontSize: 20),
-          ),
-          Text(
-            ' 4 ',
-            style: TextStyle(fontSize: 20),
-          ),
-          Text(
-            ' 5 ',
-            style: TextStyle(fontSize: 20),
-          ),
-          Text(
-            ' 6 ',
-            style: TextStyle(fontSize: 20),
-          ),
-          Text(
-            ' 7 ',
-            style: TextStyle(fontSize: 20),
-          ),
+          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
+          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
+          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
+          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
+          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
+          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
+          Text(' $_mondayDate ', style: const TextStyle(fontSize: 20)),
         ],
       ),
     );
